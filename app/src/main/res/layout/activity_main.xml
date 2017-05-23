@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <com.duma.ld.mylibrary.SwitchView
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        app:RadiusWight="23dp"
+        app:bgColor="#FFE0B2"
+        app:leftColor="#8cc152"
+        app:rightColor="#757575"
+        app:setChecked="true"
+        app:textLeft="预约车位"
+        app:textLeftColor="#8cc152"
+        app:textRight="我有车位"
+        app:textRightColor="#8cc152" />
+</LinearLayout>

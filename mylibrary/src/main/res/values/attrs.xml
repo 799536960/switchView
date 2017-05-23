@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SwitchView">
+        <attr name="bgColor" format="color|reference" />
+        <attr name="leftColor" format="color|reference" />
+        <attr name="rightColor" format="color|reference" />
+        <attr name="textLeftColor" format="color" />
+        <attr name="textRightColor" format="color" />
+        <attr name="textLeft" format="string" />
+        <attr name="textRight" format="string" />
+        <attr name="setChecked" format="boolean" />
+        <attr name="RadiusWight" format="dimension" />
+        <attr name="padding" format="dimension" />
+    </declare-styleable>
+</resources>
