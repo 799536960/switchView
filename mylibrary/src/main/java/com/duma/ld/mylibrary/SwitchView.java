@@ -12,6 +12,7 @@ import android.graphics.Path;
 import android.graphics.RectF;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -48,6 +49,7 @@ public class SwitchView extends View {
     private boolean checked;
     private float padding;
 
+    private int time;
     private String textLeft, textRight;
     int rgb = Color.rgb(255, 255, 255);
 
@@ -79,7 +81,8 @@ public class SwitchView extends View {
         textLeft = a.getString(R.styleable.SwitchView_textLeft);
         textRight = a.getString(R.styleable.SwitchView_textRight);
         padding = a.getDimension(R.styleable.SwitchView_padding, dp2px(4));
-        recWidth = a.getDimension(R.styleable.SwitchView_RadiusWight, dp2px(30));
+        recWidth = a.getDimension(R.styleable.SwitchView_RadiusWight, dp2px(23));
+        time = a.getInteger(R.styleable.SwitchView_time, 400);
         a.recycle();
     }
 
@@ -170,13 +173,14 @@ public class SwitchView extends View {
         anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
+                Log.e("Float  ", "" + animation.getAnimatedValue());
                 offsetWidth((Float) animation.getAnimatedValue());
                 invalidate();
             }
         });
         AnimatorSet animSet = new AnimatorSet();
         animSet.play(anim).with(anim2).with(anim3).with(anim4);
-        animSet.setDuration(800);
+        animSet.setDuration(time);
         animSet.start();
 
     }
@@ -195,9 +199,9 @@ public class SwitchView extends View {
         RectF rectFTo2 = new RectF(width + offset, 0 + padding, width + recWidth * 2 - padding + offset, mHeight - padding);
         //绘制矩形
         RectF rect = new RectF(recWidth + offset, 0 + padding, width + recWidth + offset, mHeight - padding);
-        path.arcTo(rectFTo, 90, 180, true);
-        path.arcTo(rectFTo2, -90, 180, true);
+        path.addArc(rectFTo, 90, 180);
         path.addRect(rect, Path.Direction.CW);
+        path.addArc(rectFTo2, -90, 180);
         return path;
     }
 
@@ -205,7 +209,6 @@ public class SwitchView extends View {
     private Path getPath(Path path, float padding, float width) {
         return getPath(path, padding, width, 0);
     }
-
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {

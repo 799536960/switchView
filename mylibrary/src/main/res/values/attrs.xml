@@ -11,5 +11,6 @@
         <attr name="setChecked" format="boolean" />
         <attr name="RadiusWight" format="dimension" />
         <attr name="padding" format="dimension" />
+        <attr name="time" format="integer" />
     </declare-styleable>
 </resources>
