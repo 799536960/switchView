@@ -9,7 +9,6 @@
         <attr name="textLeft" format="string" />
         <attr name="textRight" format="string" />
         <attr name="setChecked" format="boolean" />
-        <attr name="RadiusWight" format="dimension" />
         <attr name="padding" format="dimension" />
         <attr name="time" format="integer" />
     </declare-styleable>

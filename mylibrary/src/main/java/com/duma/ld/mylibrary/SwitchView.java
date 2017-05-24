@@ -12,7 +12,6 @@ import android.graphics.Path;
 import android.graphics.RectF;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -35,12 +34,10 @@ public class SwitchView extends View {
     private String clickColor;
 
     private float mWidth, mHeight;
-    private float recWidth;//弧线宽度
 
-    private float mClickWidth;//里面的小椭圆的宽度
+    private float mClickWidth;//偏移量
 
-    private float juxinWidth;//去掉弧线的宽度
-
+    private RectF roundRect;//圆角矩形坐标
 
     private Path bgPath;//背景大的路径
     private Path clickPath;//小的路径
@@ -81,7 +78,6 @@ public class SwitchView extends View {
         textLeft = a.getString(R.styleable.SwitchView_textLeft);
         textRight = a.getString(R.styleable.SwitchView_textRight);
         padding = a.getDimension(R.styleable.SwitchView_padding, dp2px(4));
-        recWidth = a.getDimension(R.styleable.SwitchView_RadiusWight, dp2px(23));
         time = a.getInteger(R.styleable.SwitchView_time, 400);
         a.recycle();
     }
@@ -92,6 +88,9 @@ public class SwitchView extends View {
 
     //初始化画笔
     private void initPaint() {
+        roundRect = new RectF();
+        clickPath = new Path();
+        bgPath = new Path();
         bgPaint = new Paint();
         bgPaint.setColor(bgColor);
         bgPaint.setAntiAlias(true);
@@ -119,10 +118,8 @@ public class SwitchView extends View {
 
     private void refreshColor() {
         if (!isChecked()) {
-            offsetWidth(0);
             setClickColor(Integer.parseInt(leftColor));
         } else {
-            offsetWidth(mClickWidth);
             setClickColor(Integer.parseInt(rightColor));
         }
     }
@@ -134,15 +131,15 @@ public class SwitchView extends View {
 
     //初始化Path
     private void initPath() {
-        mClickWidth = juxinWidth / 2 + recWidth;
+        mClickWidth = (mWidth - padding * 2) / 2;
         if (!isChecked()) {
             offsetWidth(0);
         } else {
             offsetWidth(mClickWidth);
         }
-        bgPath = getPath(bgPath, 0, juxinWidth);
-        mLeftTextX = (mClickWidth - leftTextPaint.measureText(textLeft)) / 2; //拿到字符串的宽度
-        mRightTextX = mClickWidth + (mClickWidth - rightTextPaint.measureText(textRight)) / 2; //拿到字符串的宽度
+        getPath(bgPath, 0, mWidth, 0);
+        mLeftTextX = (mClickWidth - leftTextPaint.measureText(textLeft)) / 2 + padding; //拿到字符串的宽度
+        mRightTextX = mClickWidth + padding + (mClickWidth - rightTextPaint.measureText(textRight)) / 2; //拿到字符串的宽度
         Paint.FontMetrics LfontMetrics = leftTextPaint.getFontMetrics();
         mLiftTextY = mHeight / 2 + (Math.abs(LfontMetrics.ascent) - LfontMetrics.descent) / 2;
         Paint.FontMetrics RfontMetrics = rightTextPaint.getFontMetrics();
@@ -173,7 +170,6 @@ public class SwitchView extends View {
         anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                Log.e("Float  ", "" + animation.getAnimatedValue());
                 offsetWidth((Float) animation.getAnimatedValue());
                 invalidate();
             }
@@ -186,28 +182,16 @@ public class SwitchView extends View {
     }
 
     private void offsetWidth(float w) {
-        clickPath = getPath(clickPath, padding, juxinWidth / 2 - recWidth, w);
+        getPath(clickPath, padding, mClickWidth, w);
     }
 
-    //画圆矩形
-    private Path getPath(Path path, float padding, float width, float offset) {
-        if (offset < padding) {
-            offset = 0;
-        }
-        path = new Path();
-        RectF rectFTo = new RectF(0 + padding + offset, 0 + padding, recWidth * 2 + offset, mHeight - padding);
-        RectF rectFTo2 = new RectF(width + offset, 0 + padding, width + recWidth * 2 - padding + offset, mHeight - padding);
-        //绘制矩形
-        RectF rect = new RectF(recWidth + offset, 0 + padding, width + recWidth + offset, mHeight - padding);
-        path.addArc(rectFTo, 90, 180);
-        path.addRect(rect, Path.Direction.CW);
-        path.addArc(rectFTo2, -90, 180);
-        return path;
-    }
-
-    //画圆矩形
-    private Path getPath(Path path, float padding, float width) {
-        return getPath(path, padding, width, 0);
+    //绘制圆角矩形
+    private void getPath(Path path, float padding, float width, float offset) {
+        //矩形坐标
+        roundRect.set(0 + padding + offset, 0 + padding, width + padding + offset, mHeight - padding);
+        path.rewind();
+        //绘制
+        path.addRoundRect(roundRect, mHeight / 2, mHeight / 2, Path.Direction.CW);
     }
 
     @Override
@@ -218,7 +202,6 @@ public class SwitchView extends View {
         int heightMode = MeasureSpec.getMode(heightMeasureSpec);
         if (widthMode == MeasureSpec.EXACTLY) {
             mWidth = widthSize; //获取到当前view的宽度
-            juxinWidth = mWidth - recWidth * 2;
         }
         if (heightMode == MeasureSpec.EXACTLY) {
             mHeight = heightSize;//获取当前view的高度
