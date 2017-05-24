@@ -14,3 +14,7 @@
         app:textRight="我有车位"//同上
         app:textRightColor="#8cc152" />//同上
 ```
+用法
+```java
+ compile 'com.ld:switchView:1.0.0'
+ ```
