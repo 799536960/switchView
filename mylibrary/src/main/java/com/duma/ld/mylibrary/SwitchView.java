@@ -41,7 +41,6 @@ public class SwitchView extends View implements View.OnClickListener {
     private Path bgPath;//背景大的路径
     private Path clickPath;//小的路径
 
-    private ValueAnimator anim;
     private boolean checked;
     private float padding;
 
@@ -50,6 +49,16 @@ public class SwitchView extends View implements View.OnClickListener {
     int rgb = Color.rgb(255, 255, 255);
 
     private float mLeftTextX, mLiftTextY, mRightTextX, mRightTexty;
+
+    //动画对象
+    private float animatorRight;
+    private float animatorLift;
+
+    private ValueAnimator anim;
+    private ObjectAnimator anim2;
+    private ObjectAnimator anim3;
+    private ObjectAnimator anim4;
+    private AnimatorSet animSet;
 
     public SwitchView(Context context) {
         this(context, null);
@@ -78,13 +87,30 @@ public class SwitchView extends View implements View.OnClickListener {
         textLeft = a.getString(R.styleable.SwitchView_textLeft);
         textRight = a.getString(R.styleable.SwitchView_textRight);
         padding = a.getDimension(R.styleable.SwitchView_padding, dp2px(4));
-        time = a.getInteger(R.styleable.SwitchView_time, 400);
+        time = a.getInteger(R.styleable.SwitchView_time, 300);
         a.recycle();
     }
 
 
     //初始化画笔
     private void initPaint() {
+        anim = new ValueAnimator();
+        anim2 = new ObjectAnimator();
+        anim2.setTarget(SwitchView.this);
+        anim2.setPropertyName("textLeftColor");
+
+
+        anim3 = new ObjectAnimator();
+        anim3.setTarget(SwitchView.this);
+        anim3.setPropertyName("textRightColor");
+
+
+        anim4 = new ObjectAnimator();
+        anim4.setTarget(SwitchView.this);
+        anim4.setPropertyName("clickColor");
+
+        animSet = new AnimatorSet();
+
         roundRect = new RectF();
         clickPath = new Path();
         bgPath = new Path();
@@ -137,41 +163,48 @@ public class SwitchView extends View implements View.OnClickListener {
         mLiftTextY = mHeight / 2 + (Math.abs(LfontMetrics.ascent) - LfontMetrics.descent) / 2;
         Paint.FontMetrics RfontMetrics = rightTextPaint.getFontMetrics();
         mRightTexty = mHeight / 2 + (Math.abs(RfontMetrics.ascent) - RfontMetrics.descent) / 2;
+        animatorRight = 0;
+        animatorLift = mClickWidth;
     }
 
     private void initAnim() {
-        ObjectAnimator anim2;
-        ObjectAnimator anim3;
-        ObjectAnimator anim4;
+        if (animSet.isRunning()) {
+            animSet.cancel();
+        }
         if (isChecked()) {
-            anim = ValueAnimator.ofFloat(0, mClickWidth);
-            anim2 = ObjectAnimator.ofObject(SwitchView.this, "textLeftColor", new ColorEvaluator(),
-                    toHexEncoding(rgb), toHexEncoding(Integer.parseInt(textLeftColor)));
-            anim3 = ObjectAnimator.ofObject(SwitchView.this, "textRightColor", new ColorEvaluator(),
-                    toHexEncoding(Integer.parseInt(textRightColor)), toHexEncoding(rgb));
-            anim4 = ObjectAnimator.ofObject(SwitchView.this, "clickColor", new ColorEvaluator(),
-                    toHexEncoding(Integer.parseInt(leftColor)), toHexEncoding(Integer.parseInt(rightColor)));
+            anim.setFloatValues(animatorRight, mClickWidth);
+            setAnimView(anim2, toHexEncoding(rgb), toHexEncoding(Integer.parseInt(textLeftColor)));
+            setAnimView(anim3, toHexEncoding(Integer.parseInt(textRightColor)), toHexEncoding(rgb));
+            setAnimView(anim4, toHexEncoding(Integer.parseInt(leftColor)), toHexEncoding(Integer.parseInt(rightColor)));
         } else {
-            anim = ValueAnimator.ofFloat(mClickWidth, 0);
-            anim2 = ObjectAnimator.ofObject(SwitchView.this, "textLeftColor", new ColorEvaluator(),
-                    toHexEncoding(Integer.parseInt(leftColor)), toHexEncoding(rgb));
-            anim3 = ObjectAnimator.ofObject(SwitchView.this, "textRightColor", new ColorEvaluator(),
-                    toHexEncoding(rgb), toHexEncoding(Integer.parseInt(textRightColor)));
-            anim4 = ObjectAnimator.ofObject(SwitchView.this, "clickColor", new ColorEvaluator(),
-                    toHexEncoding(Integer.parseInt(rightColor)), toHexEncoding(Integer.parseInt(leftColor)));
+            anim.setFloatValues(animatorLift, 0);
+            setAnimView(anim2, toHexEncoding(Integer.parseInt(leftColor)), toHexEncoding(rgb));
+            setAnimView(anim3, toHexEncoding(rgb), toHexEncoding(Integer.parseInt(textRightColor)));
+            setAnimView(anim4, toHexEncoding(Integer.parseInt(rightColor)), toHexEncoding(Integer.parseInt(leftColor)));
         }
         anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
+                if ((Float) animation.getAnimatedValue() == 0 || (Float) animation.getAnimatedValue() == mClickWidth) {
+                    animatorRight = 0;
+                    animatorLift = mClickWidth;
+                } else {
+                    animatorRight = (Float) animation.getAnimatedValue();
+                    animatorLift = (Float) animation.getAnimatedValue();
+                }
                 offsetWidth((Float) animation.getAnimatedValue());
                 invalidate();
             }
         });
-        AnimatorSet animSet = new AnimatorSet();
         animSet.play(anim).with(anim2).with(anim3).with(anim4);
         animSet.setDuration(time);
         animSet.start();
 
+    }
+
+    private void setAnimView(ObjectAnimator anim, Object... values) {
+        anim.setObjectValues(values);
+        anim.setEvaluator(new ColorEvaluator());
     }
 
     private void offsetWidth(float w) {
@@ -203,19 +236,6 @@ public class SwitchView extends View implements View.OnClickListener {
 
         initPath();
     }
-
-//    @Override
-//    public boolean onTouchEvent(MotionEvent event) {
-//        switch (event.getAction()) {
-//            case MotionEvent.ACTION_UP:
-//                //获取屏幕上点击的坐标
-//                float x = event.getX();
-//                float y = event.getY();
-//                animStart();
-//                return true;
-//        }
-//        return true;
-//    }
 
 
     @Override
@@ -305,9 +325,7 @@ public class SwitchView extends View implements View.OnClickListener {
             return;
         }
         this.checked = checked;
-        if (anim == null || !anim.isRunning()) {
-            initAnim();
-        }
+        initAnim();
         onClickCheckedListener.onClick();
     }
 
