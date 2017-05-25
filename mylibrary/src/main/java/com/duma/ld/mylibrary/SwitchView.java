@@ -12,14 +12,13 @@ import android.graphics.Path;
 import android.graphics.RectF;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
 import android.view.View;
 
 /**
  * Created by liudong on 2017/5/19.
  */
 
-public class SwitchView extends View {
+public class SwitchView extends View implements View.OnClickListener {
     private int bgColor;
     private String leftColor;
     private String rightColor;
@@ -64,6 +63,7 @@ public class SwitchView extends View {
         super(context, attrs, defStyleAttr);
         init(attrs);
         initPaint();
+        setOnClickListener(this);
     }
 
     private void init(@Nullable AttributeSet attrs) {
@@ -82,9 +82,6 @@ public class SwitchView extends View {
         a.recycle();
     }
 
-    private boolean isChecked() {
-        return checked;
-    }
 
     //初始化画笔
     private void initPaint() {
@@ -124,10 +121,6 @@ public class SwitchView extends View {
         }
     }
 
-    public void setChecked(boolean checked) {
-        this.checked = checked;
-        initAnim();
-    }
 
     //初始化Path
     private void initPath() {
@@ -150,7 +143,7 @@ public class SwitchView extends View {
         ObjectAnimator anim2;
         ObjectAnimator anim3;
         ObjectAnimator anim4;
-        if (!isChecked()) {
+        if (isChecked()) {
             anim = ValueAnimator.ofFloat(0, mClickWidth);
             anim2 = ObjectAnimator.ofObject(SwitchView.this, "textLeftColor", new ColorEvaluator(),
                     toHexEncoding(rgb), toHexEncoding(Integer.parseInt(textLeftColor)));
@@ -211,26 +204,18 @@ public class SwitchView extends View {
         initPath();
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_UP:
-                //获取屏幕上点击的坐标
-                float x = event.getX();
-                float y = event.getY();
-                animStart();
-                return true;
-        }
-        return true;
-    }
-
-    private void animStart() {
-        if (anim == null || !anim.isRunning()) {
-            initAnim();
-            checked = !checked;
-        }
-
-    }
+//    @Override
+//    public boolean onTouchEvent(MotionEvent event) {
+//        switch (event.getAction()) {
+//            case MotionEvent.ACTION_UP:
+//                //获取屏幕上点击的坐标
+//                float x = event.getX();
+//                float y = event.getY();
+//                animStart();
+//                return true;
+//        }
+//        return true;
+//    }
 
 
     @Override
@@ -304,5 +289,37 @@ public class SwitchView extends View {
         sb.append(G.toUpperCase());
         sb.append(B.toUpperCase());
         return sb.toString();
+    }
+
+    //********************************
+
+    private onClickCheckedListener onClickCheckedListener;
+
+    @Override
+    public void onClick(View v) {
+        setChecked(!checked);
+    }
+
+    public void setChecked(boolean checked) {
+        if (checked == this.checked) {
+            return;
+        }
+        this.checked = checked;
+        if (anim == null || !anim.isRunning()) {
+            initAnim();
+        }
+        onClickCheckedListener.onClick();
+    }
+
+    public interface onClickCheckedListener {
+        void onClick();
+    }
+
+    public void setOnClickCheckedListener(SwitchView.onClickCheckedListener onClickCheckedListener) {
+        this.onClickCheckedListener = onClickCheckedListener;
+    }
+
+    public boolean isChecked() {
+        return checked;
     }
 }
