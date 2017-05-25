@@ -18,5 +18,16 @@
 ```
 用法
 ```java
-compile 'com.ld:switchView:1.1.0'
+compile 'com.ld:switchView:1.1.2'
  ```
+ 
+ 点击监听
+```java
+  switchView.setOnClickCheckedListener(new SwitchView.onClickCheckedListener() {
+            @Override
+            public void onClick() {
+                Toast.makeText(MainActivity.this, "type:" + switchView.isChecked(), Toast.LENGTH_SHORT).show();
+            }
+        });
+```
+有问题需要欢迎留言
