@@ -1,4 +1,6 @@
 # switchView
+![](https://github.com/799536960/switchView/blob/master/20170524104352-7c011ad592.%5Bgif-2-mp4.com%5D.gif)  
+
 
 ```java
 <com.duma.ld.mylibrary.SwitchView
