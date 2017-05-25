@@ -18,7 +18,7 @@
 ```
 用法
 ```java
-compile 'com.ld:switchView:1.1.0'
+compile 'com.ld:switchView:1.1.2'
  ```
  
  点击监听
