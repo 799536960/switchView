@@ -326,7 +326,9 @@ public class SwitchView extends View implements View.OnClickListener {
         }
         this.checked = checked;
         initAnim();
-        onClickCheckedListener.onClick();
+        if (onClickCheckedListener != null) {
+            onClickCheckedListener.onClick();
+        }
     }
 
     public interface onClickCheckedListener {
