@@ -58,7 +58,7 @@ public class SwitchView extends View implements View.OnClickListener {
     private ObjectAnimator anim2;
     private ObjectAnimator anim3;
     private ObjectAnimator anim4;
-    private AnimatorSet animSet;
+
 
     public SwitchView(Context context) {
         this(context, null);
@@ -109,7 +109,6 @@ public class SwitchView extends View implements View.OnClickListener {
         anim4.setTarget(SwitchView.this);
         anim4.setPropertyName("clickColor");
 
-        animSet = new AnimatorSet();
 
         roundRect = new RectF();
         clickPath = new Path();
@@ -168,6 +167,7 @@ public class SwitchView extends View implements View.OnClickListener {
     }
 
     private void initAnim() {
+        AnimatorSet animSet = new AnimatorSet();
         if (animSet.isRunning()) {
             animSet.cancel();
         }
