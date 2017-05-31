@@ -13,12 +13,14 @@
         app:setChecked="true"//true 是在右边 反之
         app:textLeft="预约车位"//左边text
         app:textLeftColor="#8cc152"//左边字的颜色
-        app:textRight="我有车位"//同上
+        app:textLeftClickColor="#757575"//左边字选中后颜色 默认白
+        app:textRight="我有车位"//同上
+        app:textRightClickColor="#FFE0B2"//同上
         app:textRightColor="#8cc152" />//同上
 ```
 用法
 ```java
-compile 'com.ld:switchView:1.1.5'
+compile 'com.ld:switchView:1.1.6'
  ```
  
  点击监听
@@ -30,4 +32,4 @@ compile 'com.ld:switchView:1.1.5'
             }
         });
 ```
-有问题需要欢迎留言
+有问题需要 欢迎留言~  
