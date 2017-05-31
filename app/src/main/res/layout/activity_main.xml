@@ -8,19 +8,18 @@
 
     <com.duma.ld.mylibrary.SwitchView
         android:id="@+id/switchview"
-        android:layout_width="200dp"
-        android:layout_height="50dp"
-        android:visibility="visible"
-        app:bgColor="#FFE0B2"
-        app:leftColor="#8cc152"
-        app:rightColor="#757575"
-        app:setChecked="true"
-        app:textLeft="预约车位"
-        app:textLeftClickColor="#757575"
-        app:textLeftColor="#8cc152"
-        app:textRight="我有车位"
-        app:textRightClickColor="#FFE0B2"
-        app:textRightColor="#8cc152" />
+        android:layout_width="189dp"
+        android:layout_height="51dp"
+        android:layout_gravity="center|top"
+        android:layout_marginTop="6dp"
+        app:leftColor="#FFE35D"
+        app:rightColor="#333333"
+        app:textLeft="找车位"
+        app:textLeftClickColor="#333333"
+        app:textLeftColor="#333333"
+        app:textRight="发布车位"
+        app:textRightClickColor="#FFE35D"
+        app:textRightColor="#333333" />
 
     <Button
         android:id="@+id/button"

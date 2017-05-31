@@ -12,6 +12,7 @@ import android.graphics.Path;
 import android.graphics.RectF;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 /**
@@ -87,7 +88,7 @@ public class SwitchView extends View implements View.OnClickListener {
         textRightColor = String.valueOf(a.getColor(R.styleable.SwitchView_textRightColor, Color.rgb(0, 0, 0)));
         textLeftClickColor = String.valueOf(a.getColor(R.styleable.SwitchView_textLeftClickColor, rgb));
         textRightClickColor = String.valueOf(a.getColor(R.styleable.SwitchView_textRightClickColor, rgb));
-        checked = a.getBoolean(R.styleable.SwitchView_setChecked, false);
+        checked = a.getBoolean(R.styleable.SwitchView_setChecked, false);//false left , true right
         textLeft = a.getString(R.styleable.SwitchView_textLeft);
         textRight = a.getString(R.styleable.SwitchView_textRight);
         padding = a.getDimension(R.styleable.SwitchView_padding, dp2px(4));
@@ -95,10 +96,13 @@ public class SwitchView extends View implements View.OnClickListener {
         a.recycle();
     }
 
+    private AnimatorSet animSet;
 
     //初始化画笔
     private void initPaint() {
+        animSet = new AnimatorSet();
         anim = new ValueAnimator();
+
         anim2 = new ObjectAnimator();
         anim2.setTarget(SwitchView.this);
         anim2.setPropertyName("textLeftColor");
@@ -171,10 +175,10 @@ public class SwitchView extends View implements View.OnClickListener {
     }
 
     private void initAnim() {
-        AnimatorSet animSet = new AnimatorSet();
-        if (animSet.isRunning()) {
+        if (animSet != null && animSet.isRunning()) {
             animSet.cancel();
         }
+        animSet = new AnimatorSet();
         if (isChecked()) {
             anim.setFloatValues(animatorRight, mClickWidth);
             setAnimView(anim2, toHexEncoding(Integer.parseInt(textLeftClickColor)), toHexEncoding(Integer.parseInt(textLeftColor)));
