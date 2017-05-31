@@ -20,7 +20,7 @@
 ```
 用法
 ```java
-compile 'com.ld:switchView:1.1.5'
+compile 'com.ld:switchView:1.1.6'
  ```
  
  点击监听
