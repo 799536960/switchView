@@ -16,10 +16,11 @@
         app:rightColor="#757575"
         app:setChecked="true"
         app:textLeft="预约车位"
+        app:textLeftClickColor="#757575"
         app:textLeftColor="#8cc152"
         app:textRight="我有车位"
+        app:textRightClickColor="#FFE0B2"
         app:textRightColor="#8cc152" />
-
 
     <Button
         android:id="@+id/button"

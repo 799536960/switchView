@@ -6,6 +6,8 @@
         <attr name="rightColor" format="color|reference" />
         <attr name="textLeftColor" format="color" />
         <attr name="textRightColor" format="color" />
+        <attr name="textLeftClickColor" format="color" />
+        <attr name="textRightClickColor" format="color" />
         <attr name="textLeft" format="string" />
         <attr name="textRight" format="string" />
         <attr name="setChecked" format="boolean" />

@@ -24,6 +24,8 @@ public class SwitchView extends View implements View.OnClickListener {
     private String rightColor;
     private String textLeftColor;
     private String textRightColor;
+    private String textLeftClickColor;
+    private String textRightClickColor;
 
     private Paint bgPaint;//背景画笔
     private Paint clickPaint;//点击画笔
@@ -83,6 +85,8 @@ public class SwitchView extends View implements View.OnClickListener {
         rightColor = String.valueOf(a.getColor(R.styleable.SwitchView_rightColor, Color.rgb(34, 139, 34)));
         textLeftColor = String.valueOf(a.getColor(R.styleable.SwitchView_textLeftColor, Color.rgb(0, 0, 0)));
         textRightColor = String.valueOf(a.getColor(R.styleable.SwitchView_textRightColor, Color.rgb(0, 0, 0)));
+        textLeftClickColor = String.valueOf(a.getColor(R.styleable.SwitchView_textLeftClickColor, rgb));
+        textRightClickColor = String.valueOf(a.getColor(R.styleable.SwitchView_textRightClickColor, rgb));
         checked = a.getBoolean(R.styleable.SwitchView_setChecked, false);
         textLeft = a.getString(R.styleable.SwitchView_textLeft);
         textRight = a.getString(R.styleable.SwitchView_textRight);
@@ -129,10 +133,10 @@ public class SwitchView extends View implements View.OnClickListener {
         rightTextPaint.setAntiAlias(true);
 
         if (!isChecked()) {
-            leftTextPaint.setColor(rgb);
+            leftTextPaint.setColor(Integer.parseInt(textLeftClickColor));
             rightTextPaint.setColor(Integer.parseInt(textRightColor));
         } else {
-            rightTextPaint.setColor(rgb);
+            rightTextPaint.setColor(Integer.parseInt(textRightClickColor));
             leftTextPaint.setColor(Integer.parseInt(textLeftColor));
         }
     }
@@ -173,13 +177,13 @@ public class SwitchView extends View implements View.OnClickListener {
         }
         if (isChecked()) {
             anim.setFloatValues(animatorRight, mClickWidth);
-            setAnimView(anim2, toHexEncoding(rgb), toHexEncoding(Integer.parseInt(textLeftColor)));
-            setAnimView(anim3, toHexEncoding(Integer.parseInt(textRightColor)), toHexEncoding(rgb));
+            setAnimView(anim2, toHexEncoding(Integer.parseInt(textLeftClickColor)), toHexEncoding(Integer.parseInt(textLeftColor)));
+            setAnimView(anim3, toHexEncoding(Integer.parseInt(textRightColor)), toHexEncoding(Integer.parseInt(textRightClickColor)));
             setAnimView(anim4, toHexEncoding(Integer.parseInt(leftColor)), toHexEncoding(Integer.parseInt(rightColor)));
         } else {
             anim.setFloatValues(animatorLift, 0);
-            setAnimView(anim2, toHexEncoding(Integer.parseInt(leftColor)), toHexEncoding(rgb));
-            setAnimView(anim3, toHexEncoding(rgb), toHexEncoding(Integer.parseInt(textRightColor)));
+            setAnimView(anim2, toHexEncoding(Integer.parseInt(textLeftColor)), toHexEncoding(Integer.parseInt(textLeftClickColor)));
+            setAnimView(anim3, toHexEncoding(Integer.parseInt(textRightClickColor)), toHexEncoding(Integer.parseInt(textRightColor)));
             setAnimView(anim4, toHexEncoding(Integer.parseInt(rightColor)), toHexEncoding(Integer.parseInt(leftColor)));
         }
         anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
